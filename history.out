@@ -1,0 +1,70 @@
+ 1  hostnamectl set-hostname mephi-2026.domain.local
+    2  hostnamectl status
+    3  nmcli c show
+    4  nmcli connection modify "Проводное подключение 1" ipv4.method auto
+    5  ping -c 4 8.8.8.8
+    6  dnf upgrade -y
+    7  dnf install -y nginx libcap-ng-utils
+    8  dnf download tcpdump --destdir /tmp
+    9  rpm -Uvh --replacepkgs "$(ls -1t /tmp/tcpdump-*.rpm | head -1)"
+   10  rpm -q tcpdump
+   11  lsblk -f
+   12  blkid -L MEPHI_WEB
+   13  fdisk /dev/sdb
+   14  lsblk
+   15  mkfs.ext4 -L MEPHI_WEB /dev/sdb1
+   16  blkid -L MEPHI_WEB
+   17  lsblk
+   18  grep -q 'LABEL=MEPHI_WEB' /etc/fstab || echo 'LABEL=MEPHI_WEB /mephi-web ext4 defaults 0 2' >> /etc/fstab
+   19  mkdir -p /mephi-web
+   20  mount -a
+   21  findmnt /mephi-web
+   22  sed -i 's#root[[:space:]]\+/usr/share/nginx/html;#root /mephi-web;#' /etc/nginx/nginx.conf /etc/nginx/conf.d/*.conf /etc/nginx/default.d/*.conf
+   23  nginx -t
+   24  systemctl enable --now nginx
+   25  systemctl restart nginx
+   26  getent group curators >/dev/null || groupadd -g 4444 curators
+   27  groupadd -g 4445 mephi-project
+   28  useradd -u 5501 -g mephi-project -m user1
+   29  useradd -u 5502 -g mephi-project -m user2
+   30  useradd -u 5503 -g mephi-project -m user3
+   31  useradd -m -G curators curator1
+   32  useradd -m -G curators curator2
+   33  usermod -g mephi-project user1
+   34  usermod -g mephi-project user2
+   35  usermod -g mephi-project user3
+   36  usermod -aG curators curator1
+   37  usermod -aG curators curator2
+   38  mkdir -p /data/mephi-2026
+   39  chown root:mephi-project /data/mephi-2026
+   40  chmod 2770 /data/mephi-2026
+   41  setfacl -m u::rwx,g::rwx,g:curators:r-x,o::---,m::rwx /data/mephi-2026
+   42  setfacl -d -m u::rwx,g::rwx,g:curators:r-x,o::---,m::rwx /data/mephi-2026
+   43  getfacl /data/mephi-2026
+   44  chmod u-s /usr/sbin/tcpdump
+   45  setcap cap_net_raw,cap_net_admin=eip /usr/sbin/tcpdump
+   46  getcap /usr/sbin/tcpdump
+   47  sudo -u user1 timeout 3 tcpdump -c 1 -n -i lo
+   48  getenforce
+   49  semanage fcontext -m -t httpd_sys_content_t '/mephi-web(/.*)?'
+   50  restorecon -Rv /mephi-web
+   51  echo '-:curator1 curator2:LOCAL' >> /etc/security/access.conf
+   52  sed -i '1i account    required     pam_access.so' /etc/pam.d/login
+   53  nano /etc/login.defs
+   54  nano /etc/security/pwquality.conf
+   55  chage -M 90 user1
+   56  chage -M 90 user2
+   57  chage -M 90 user3
+   58  chage -M 90 curator1
+   59  chage -M 90 curator2
+   60  passwd user1
+   61  passwd user2
+   62  passwd user3
+   63  sudo -u user1 bash -c 'echo from-user1 > /data/mephi-2026/shared.txt'
+   64  sudo -u user2 bash -c 'echo from-user2 >> /data/mephi-2026/shared.txt'
+   65  sudo -u curator1 cat /data/mephi-2026/shared.txt
+   66  sudo -u curator1 bash -c 'echo x >> /data/mephi-2026/shared.txt' || echo 'curator write denied'
+   67  echo 'Hello from Student: 373101' > /mephi-web/index.html
+   68  restorecon -v /mephi-web/index.html
+   69  curl http://localhost/
+   70  history

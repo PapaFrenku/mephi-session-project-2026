@@ -1,0 +1,17 @@
+ID Командная строка                     Дата и время        Действие(я) Изменено
+16 dnf install -y nginx libcap-ng-utils 2026-10-04 20:22:24                    6
+15 dnf upgrade -y                       2026-10-04 20:21:36                   18
+14 dnf remove -y nginx                  2026-10-04 20:10:30                    6
+13 dnf install git                      2026-10-04 19:46:34                   67
+12 dnf install nginx libcap-ng-utils    2026-10-02 22:35:11                    7
+11 dnf remove libcap-ng-utils           2026-10-02 22:31:11                    1
+10 dnf remove tcpdump                   2026-10-02 22:30:53                    1
+ 9 dnf remove nginx                     2026-10-02 22:29:39                    6
+ 8 dnf install libcap-ng-utils          2026-10-02 18:44:17                    1
+ 7 dnf install nginx                    2026-10-02 18:43:22                    6
+ 6 dnf upgrade                          2026-10-02 18:41:56                   94
+ 5 dnf install syncthing                2026-10-02 17:34:16                    2
+ 4 dnf install httpd                    2026-09-28 21:16:25                   12
+ 3 dnf install seinfo                   2026-09-28 21:07:21                    1
+ 2 dnf install gcc                      2026-09-25 21:51:41                   10
+ 1                                      2026-09-24 15:59:31                  706
